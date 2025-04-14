@@ -1,28 +1,341 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Solar System Educational Experience</title>
-    <link href="styles.css" rel="stylesheet" >
-    <script src="ar.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR/AR Educational Resources</title>
+    <!--test styling-->
+    <style>
+    
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        h1, h2 {
+            margin-top: 0;
+        }
+        
+        .subject-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        
+        .subject-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 200px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .subject-icon {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background-color: #f9f9f9;
+        }
+        
+        .science { background-color: #3498db; color: white; }
+        .math { background-color: #2ecc71; color: white; }
+        .history { background-color: #e74c3c; color: white; }
+        .language { background-color: #9b59b6; color: white; }
+        .geography { background-color: #f1c40f; color: black; }
+        .arts { background-color: #e67e22; color: white; }
+        
+        .subject-info {
+            padding: 1rem;
+        }
+        
+        .subject-info h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subject-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
 
+        /* Back button for resource page */
+        .back-button {
+            display: inline-block;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        
+        .back-button:hover {
+            background-color: #1a252f;
+        }
+        
+        /* Resource cards */
+        .resource-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .resource-card a {
+            display: flex;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .resource-thumbnail {
+            width: 200px;
+            height: 150px;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .resource-info {
+            padding: 1rem;
+            flex: 1;
+        }
+        
+        .resource-info h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .resource-info p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .resource-info .tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .tag {
+            background-color: #eaeaea;
+            color: #666;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        #homePage {
+            display: block;
+        }
+        
+        #sciencePage {
+            display: none;
+        }
+        
+        /* Making it responsive */
+        @media (max-width: 768px) {
+            .resource-card a {
+                flex-direction: column;
+            }
+            
+            .resource-thumbnail {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <canvas id="renderCanvas"></canvas>
-    <div id="infoPanel"></div>
-    <div id="instructions">
-        <h3>Solar System Explorer</h3>
-        <p>Click on planets to learn about them</p>
-        <p>Use mouse to rotate view</p>
-        <p>Scroll to zoom in/out</p>
-        <p id="statusMsg"></p>
-    </div>
-    <button id="vrButton">Enter VR</button>
-    <button id="arButton">Enter AR</button>
+    <header>
+        <h1>VR/AR Educational Resources</h1>
+    </header>
 
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
-    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <main>
+        <!-- Home Page with Subject Cards -->
+        <section id="homePage">
+            <h2>Choose a Subject</h2>
+            
+            <div class="subject-container">
+                <!-- Science Card -->
+                <div class="subject-card" onclick="showSciencePage()">
+                    <div class="subject-icon science">🔬</div>
+                    <div class="subject-info">
+                        <h3>Science</h3>
+                        <p>Explore the natural world through immersive VR/AR experiences</p>
+                    </div>
+                </div>
+                
+                <!-- Math Card -->
+                <div class="subject-card">
+                    <div class="subject-icon math">🔢</div>
+                    <div class="subject-info">
+                        <h3>Mathematics</h3>
+                        <p>Visualize complex mathematical concepts in 3D space</p>
+                    </div>
+                </div>
+                
+                <!-- History Card -->
+                <div class="subject-card">
+                    <div class="subject-icon history">🏛️</div>
+                    <div class="subject-info">
+                        <h3>History</h3>
+                        <p>Travel through time with historical reconstructions</p>
+                    </div>
+                </div>
+                
+                <!-- Language Card  -->
+                <div class="subject-card">
+                    <div class="subject-icon language">🗣️</div>
+                    <div class="subject-info">
+                        <h3>Languages</h3>
+                        <p>Practice conversations in immersive environments</p>
+                    </div>
+                </div>
+                
+                <!-- Geography Card -->
+                <div class="subject-card">
+                    <div class="subject-icon geography">🌍</div>
+                    <div class="subject-info">
+                        <h3>Geography</h3>
+                        <p>Explore landscapes and ecosystems around the world</p>
+                    </div>
+                </div>
+                
+                <!-- Arts Card  -->
+                <div class="subject-card">
+                    <div class="subject-icon arts">🎨</div>
+                    <div class="subject-info">
+                        <h3>Arts & Music</h3>
+                        <p>Create and experience art in virtual galleries</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Science Resources Page -->
+        <section id="sciencePage">
+            <a href="#" class="back-button" onclick="showHomePage()">← Back to Subjects</a>
+            
+            <h2>Science Resources</h2>
+            <!-- Solar System Resource  -->
+            <div class="resource-card">
+                <a href="solar-system.html">
+                    <div class="resource-thumbnail" style="background-color: #3498db; color: white;">
+                        🪐
+                    </div>
+                    <div class="resource-info">
+                        <h3>Explore the Solar System</h3>
+                        <p>Learn about planets, orbits, and our place in the universe through an interactive 3D model. Compatible with VR and AR devices.</p>
+                        <div class="tags">
+                            <span class="tag">Astronomy</span>
+                            <span class="tag">VR/AR</span>
+                            <span class="tag">Interactive</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Mock Resource 1 -->
+            <div class="resource-card">
+                <a href="#">
+                    <div class="resource-thumbnail" style="background-color: #27ae60; color: white;">
+                        🧬
+                    </div>
+                    <div class="resource-info">
+                        <h3>DNA Structure Explorer</h3>
+                        <p>Dive into the double helix and understand the building blocks of life with this detailed 3D model of DNA.</p>
+                        <div class="tags">
+                            <span class="tag">Biology</span>
+                            <span class="tag">VR</span>
+                            <span class="tag">Molecular</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Mock Resource 2 -->
+            <div class="resource-card">
+                <a href="#">
+                    <div class="resource-thumbnail" style="background-color: #e74c3c; color: white;">
+                        ⚛️
+                    </div>
+                    <div class="resource-info">
+                        <h3>Atomic Structure Visualization</h3>
+                        <p>Explore atoms, electrons, and the quantum world through interactive simulations that make abstract concepts tangible.</p>
+                        <div class="tags">
+                            <span class="tag">Physics</span>
+                            <span class="tag">Chemistry</span>
+                            <span class="tag">AR</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Mock Resource 3 -->
+            <div class="resource-card">
+                <a href="#">
+                    <div class="resource-thumbnail" style="background-color: #f39c12; color: white;">
+                        🔋
+                    </div>
+                    <div class="resource-info">
+                        <h3>Electric Circuits Lab</h3>
+                        <p>Build and test electrical circuits in a virtual environment. Understand voltage, current, and resistance with hands-on experiments.</p>
+                        <div class="tags">
+                            <span class="tag">Physics</span>
+                            <span class="tag">Engineering</span>
+                            <span class="tag">Interactive</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
 
+    <script>
+        function showSciencePage() {
+            document.getElementById("homePage").style.display = "none";
+            document.getElementById("sciencePage").style.display = "block";
+        }
+        
+        function showHomePage() {
+            document.getElementById("homePage").style.display = "block";
+            document.getElementById("sciencePage").style.display = "none";
+        }
+    </script>
 </body>
 </html>
