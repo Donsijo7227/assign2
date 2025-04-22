@@ -27,6 +27,12 @@
         <option value="carbon">Carbon (C)</option>
         <option value="oxygen">Oxygen (O)</option>
     </select>
+    <button id="vrButton" style="position: absolute; bottom: 20px; right: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Enter VR
+    </button>
+    <button id="arButton" style="position: absolute; bottom: 20px; right: 150px; padding: 10px 20px; background-color: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Enter AR
+    </button>
 
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
 
@@ -105,6 +111,8 @@
                 
                 // Creating the first atom (hydrogen will appear first)
                 createAtom("hydrogen");
+
+                setupVRandAR();
                 
                 // Add element selector event listener
                 document.getElementById("elementSelector").addEventListener("change", function(event) {
@@ -239,6 +247,48 @@
             
             // Create the scene
             scene = createScene();
+
+            function setupVRandAR() {
+                var vrButton = document.getElementById("vrButton");
+                var arButton = document.getElementById("arButton");
+                
+                // Only try to set up WebXR in a secure context 
+                if (!window.isSecureContext) {
+                    console.log("WebXR requires HTTPS to work.");
+                    return;
+                }
+                
+                // Trying to set up WebXR
+                try {
+                    var xrHelper = scene.createDefaultXRExperienceAsync({
+                        floorMeshes: []
+                    }).then(function(xrExperience) {
+                        // Handle VR button
+                        vrButton.addEventListener("click", function() {
+                            xrExperience.baseExperience.enterXRAsync("immersive-vr", "local-floor").catch(function(error) {
+                                console.log("Error entering VR: " + error);
+                            });
+                        });
+                        
+                        // Handle AR button
+                        arButton.addEventListener("click", function() {
+                            xrExperience.baseExperience.enterXRAsync("immersive-ar", "unbounded").catch(function(error) {
+                                console.log("Error entering AR: " + error);
+                            });
+                        });
+                        
+                    }).catch(function(error) {
+                        console.log("Error setting up WebXR: " + error);
+                        vrButton.disabled = true;
+                        arButton.disabled = true;
+                    });
+                } catch (error) {
+                    console.log("Could not initialize WebXR: " + error);
+                    vrButton.disabled = true;
+                    arButton.disabled = true;
+                }
+            }
+
             
             // Run the render loop
             engine.runRenderLoop(function() {
