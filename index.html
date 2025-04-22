@@ -4,181 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VR/AR Educational Resources</title>
-    <!--test styling-->
-    <style>
-    
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        
-        h1, h2 {
-            margin-top: 0;
-        }
-        
-        .subject-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            justify-content: center;
-        }
-        
-        .subject-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 200px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-        }
-        
-        .subject-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .subject-icon {
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            background-color: #f9f9f9;
-        }
-        
-        .science { background-color: #3498db; color: white; }
-        .math { background-color: #2ecc71; color: white; }
-        .history { background-color: #e74c3c; color: white; }
-        .language { background-color: #9b59b6; color: white; }
-        .geography { background-color: #f1c40f; color: black; }
-        .arts { background-color: #e67e22; color: white; }
-        
-        .subject-info {
-            padding: 1rem;
-        }
-        
-        .subject-info h3 {
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-        }
-        
-        .subject-info p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        /* Back button for resource page */
-        .back-button {
-            display: inline-block;
-            margin-bottom: 1rem;
-            padding: 0.5rem 1rem;
-            background-color: #2c3e50;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-        
-        .back-button:hover {
-            background-color: #1a252f;
-        }
-        
-        /* Resource cards */
-        .resource-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
-        
-        .resource-card:hover {
-            transform: translateY(-3px);
-        }
-        
-        .resource-card a {
-            display: flex;
-            text-decoration: none;
-            color: inherit;
-        }
-        
-        .resource-thumbnail {
-            width: 200px;
-            height: 150px;
-            background-color: #f9f9f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-        
-        .resource-info {
-            padding: 1rem;
-            flex: 1;
-        }
-        
-        .resource-info h3 {
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-        }
-        
-        .resource-info p {
-            margin: 0;
-            color: #666;
-        }
-        
-        .resource-info .tags {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .tag {
-            background-color: #eaeaea;
-            color: #666;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-
-        #homePage {
-            display: block;
-        }
-        
-        #sciencePage {
-            display: none;
-        }
-        
-        /* Making it responsive */
-        @media (max-width: 768px) {
-            .resource-card a {
-                flex-direction: column;
-            }
-            
-            .resource-thumbnail {
-                width: 100%;
-            }
-        }
-    </style>
+    <link href="styles.css" rel="stylesheet" type="text/css">
 </head>
 <body>
     <header>
@@ -201,7 +27,7 @@
                 </div>
                 
                 <!-- Math Card -->
-                <div class="subject-card">
+                <div class="subject-card coming-soon">
                     <div class="subject-icon math">🔢</div>
                     <div class="subject-info">
                         <h3>Mathematics</h3>
@@ -210,7 +36,7 @@
                 </div>
                 
                 <!-- History Card -->
-                <div class="subject-card">
+                <div class="subject-card coming-soon">
                     <div class="subject-icon history">🏛️</div>
                     <div class="subject-info">
                         <h3>History</h3>
@@ -219,7 +45,7 @@
                 </div>
                 
                 <!-- Language Card  -->
-                <div class="subject-card">
+                <div class="subject-card coming-soon">
                     <div class="subject-icon language">🗣️</div>
                     <div class="subject-info">
                         <h3>Languages</h3>
@@ -228,7 +54,7 @@
                 </div>
                 
                 <!-- Geography Card -->
-                <div class="subject-card">
+                <div class="subject-card coming-soon">
                     <div class="subject-icon geography">🌍</div>
                     <div class="subject-info">
                         <h3>Geography</h3>
@@ -237,7 +63,7 @@
                 </div>
                 
                 <!-- Arts Card  -->
-                <div class="subject-card">
+                <div class="subject-card coming-soon">
                     <div class="subject-icon arts">🎨</div>
                     <div class="subject-info">
                         <h3>Arts & Music</h3>
@@ -269,9 +95,27 @@
                     </div>
                 </a>
             </div>
+
+            <!-- Atom Visualizer Resource  -->
+            <div class="resource-card">
+                <a href="atom-visualizer.html">
+                    <div class="resource-thumbnail" style="background-color: #27ae60; color: white;">
+                        ⚛️
+                    </div>
+                    <div class="resource-info">
+                        <h3>Simple Atom Visualizer</h3>
+                        <p>See how electrons orbit around the nucleus of different atoms with this basic 3D model. Choose from several elements to visualize their atomic structure.</p>
+                        <div class="tags">
+                            <span class="tag">Chemistry</span>
+                            <span class="tag">3D Model</span>
+                            <span class="tag">Basic</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
             
             <!-- Mock Resource 1 -->
-            <div class="resource-card">
+            <div class="resource-card coming-soon">
                 <a href="#">
                     <div class="resource-thumbnail" style="background-color: #27ae60; color: white;">
                         🧬
@@ -289,7 +133,7 @@
             </div>
             
             <!-- Mock Resource 2 -->
-            <div class="resource-card">
+            <div class="resource-card coming-soon">
                 <a href="#">
                     <div class="resource-thumbnail" style="background-color: #e74c3c; color: white;">
                         ⚛️
@@ -307,7 +151,7 @@
             </div>
             
             <!-- Mock Resource 3 -->
-            <div class="resource-card">
+            <div class="resource-card coming-soon">
                 <a href="#">
                     <div class="resource-thumbnail" style="background-color: #f39c12; color: white;">
                         🔋

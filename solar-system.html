@@ -226,7 +226,7 @@
                     }
                 );
 
-                // Improve controller interactions
+                // controller interactions
                 xrExperienceHelper.input.onControllerAddedObservable.add(function(controller) {
                     console.log("Controller added:", controller.uniqueId);
                     
@@ -266,8 +266,6 @@
                         if (motionController.getComponentOfType("thumbstick")) {
                             const thumbStick = motionController.getComponentOfType("thumbstick");
                             thumbStick.onAxisValueChangedObservable.add((axes) => {
-                                // Forward/backward movement logic can be added here if needed
-                                // console.log("Thumbstick axes:", axes.x, axes.y);
                             });
                         }
                     });

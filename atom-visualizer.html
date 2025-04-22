@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Simple Atom Visualizer</title>
+    <link href="styles.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <a href="index.html" id="backButton">← Back to Resources</a>
+    <canvas id="renderCanvas"></canvas>
+    <div id="instructions">
+        <h3>Atom Visualizer</h3>
+        <p>Use mouse to rotate the view</p>
+        <p>Scroll to zoom in/out</p>
+        <p>Select an element from the dropdown menu</p>
+    </div>
+    <div id="atomInfo">
+        <h3>Hydrogen</h3>
+        <p>Protons: 1</p>
+        <p>Neutrons: 0</p>
+        <p>Electrons: 1</p>
+    </div>
+    <select id="elementSelector">
+        <option value="hydrogen">Hydrogen (H)</option>
+        <option value="helium">Helium (He)</option>
+        <option value="lithium">Lithium (Li)</option>
+        <option value="carbon">Carbon (C)</option>
+        <option value="oxygen">Oxygen (O)</option>
+    </select>
+
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            var canvas = document.getElementById("renderCanvas");
+            
+            // Create Babylon engine
+            var engine = new BABYLON.Engine(canvas, true);
+            
+            // Variables to store scene elements
+            var scene;
+            var camera;
+            var nucleus;
+            var electrons = [];
+            
+            // Element configurations - 
+            var elements = {
+                hydrogen: {
+                    name: "Hydrogen",
+                    protons: 1,
+                    neutrons: 0,
+                    electrons: [1], 
+                    color: "#00FFFF"
+                },
+                helium: {
+                    name: "Helium",
+                    protons: 2,
+                    neutrons: 2,
+                    electrons: [2],
+                    color: "#FFC0CB"
+                },
+                lithium: {
+                    name: "Lithium",
+                    protons: 3,
+                    neutrons: 4,
+                    electrons: [2, 1],
+                    color: "#B0C4DE"
+                },
+                carbon: {
+                    name: "Carbon",
+                    protons: 6,
+                    neutrons: 6,
+                    electrons: [2, 4],
+                    color: "#A9A9A9"
+                },
+                oxygen: {
+                    name: "Oxygen",
+                    protons: 8,
+                    neutrons: 8,
+                    electrons: [2, 6],
+                    color: "#FF0000"
+                }
+            };
+            
+            // Angles for electron animation
+            var electronAngles = [];
+            
+            // Create the main scene
+            function createScene() {
+                scene = new BABYLON.Scene(engine);
+                
+                // Add  black background
+                scene.clearColor = new BABYLON.Color3(0, 0, 0);
+                
+                // Add a camera 
+                camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 2, 15, BABYLON.Vector3.Zero(), scene);
+                camera.attachControl(canvas, true);
+                camera.upperBetaLimit = Math.PI;
+                camera.lowerRadiusLimit = 5;
+                camera.upperRadiusLimit = 50;
+                
+                // Adding light
+                var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                light.intensity = 0.7;
+                
+                // Creating the first atom (hydrogen will appear first)
+                createAtom("hydrogen");
+                
+                // Add element selector event listener
+                document.getElementById("elementSelector").addEventListener("change", function(event) {
+                    // When user selects a different element, rebuild the atom
+                    createAtom(event.target.value);
+                });
+                
+                return scene;
+            }
+            
+            // Function to create or recreate the atom
+            function createAtom(elementName) {
+                // Clear any existing atom parts
+                if (nucleus) {
+                    nucleus.dispose();
+                }
+                
+                for (var i = 0; i < electrons.length; i++) {
+                    electrons[i].dispose();
+                }
+                electrons = [];
+                electronAngles = [];
+                
+                // Get the element data
+                var element = elements[elementName];
+                
+                // Update the info panel
+                updateAtomInfo(element);
+                
+                // Create the nucleus
+                nucleus = BABYLON.MeshBuilder.CreateSphere("nucleus", {diameter: 3, segments: 16}, scene);
+                
+                // Color the nucleus based on the element
+                var nucleusMaterial = new BABYLON.StandardMaterial("nucleusMaterial", scene);
+                nucleusMaterial.diffuseColor = BABYLON.Color3.FromHexString(element.color);
+                nucleusMaterial.specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+                nucleus.material = nucleusMaterial;
+                
+                // Create electron shells and electrons
+                createElectrons(element);
+            }
+            
+            // Create electrons for the atom
+            function createElectrons(element) {
+                var shellRadius = 5; 
+                
+                // Loop through each electron shell
+                for (var shell = 0; shell < element.electrons.length; shell++) {
+                    var electronCount = element.electrons[shell];
+                    
+                    // Create the orbit path 
+                    var orbitPath = createOrbitPath(shellRadius);
+                    
+                    // Create electrons in this shell
+                    for (var e = 0; e < electronCount; e++) {
+                        // Spacing electrons evenly around the orbit
+                        var angle = (e / electronCount) * Math.PI * 2;
+                        
+                        // Create the electron
+                        var electron = BABYLON.MeshBuilder.CreateSphere("electron", {diameter: 0.5, segments: 8}, scene);
+                        
+                        // making the electorn blue
+                        var electronMaterial = new BABYLON.StandardMaterial("electronMaterial", scene);
+                        electronMaterial.diffuseColor = new BABYLON.Color3(0, 0.5, 1);
+                        electronMaterial.emissiveColor = new BABYLON.Color3(0, 0.5, 1);
+                        electron.material = electronMaterial;
+                        
+                        // Position electron initially
+                        electron.position.x = shellRadius * Math.cos(angle);
+                        electron.position.z = shellRadius * Math.sin(angle);
+                        
+                        // Store the electron and its starting angle
+                        electrons.push(electron);
+                        electronAngles.push({
+                            angle: angle,
+                            speed: 0.02 - (shell * 0.005), 
+                            radius: shellRadius,
+                            shell: shell
+                        });
+                    }
+                    
+                    // Increase radius for next shell
+                    shellRadius += 3;
+                }
+            }
+            
+            // Create a visible orbit path
+            function createOrbitPath(radius) {
+                var points = [];
+                var segments = 60;
+                
+                for (var i = 0; i <= segments; i++) {
+                    var angle = (i * Math.PI * 2) / segments;
+                    points.push(new BABYLON.Vector3(
+                        radius * Math.cos(angle),
+                        0,
+                        radius * Math.sin(angle)
+                    ));
+                }
+                
+                var orbitPath = BABYLON.MeshBuilder.CreateLines("orbit", {points: points}, scene);
+                orbitPath.color = new BABYLON.Color3(0.5, 0.5, 0.5);
+                orbitPath.alpha = 0.5;
+                
+                return orbitPath;
+            }
+            
+            // Update the atom information panel
+            function updateAtomInfo(element) {
+                var infoPanel = document.getElementById("atomInfo");
+                infoPanel.innerHTML = "<h3>" + element.name + "</h3>"
+                    + "<p>Protons: " + element.protons + "</p>"
+                    + "<p>Neutrons: " + element.neutrons + "</p>"
+                    + "<p>Electrons: " + element.protons + "</p>"; 
+            }
+            
+            // Animate the electrons around the nucleus
+            function moveElectrons() {
+                for (var i = 0; i < electrons.length; i++) {
+                    // Update the angle
+                    electronAngles[i].angle += electronAngles[i].speed;
+                    
+                    // Calculate new position
+                    var radius = electronAngles[i].radius;
+                    var angle = electronAngles[i].angle;
+                    
+                    // Move the electron
+                    electrons[i].position.x = radius * Math.cos(angle);
+                    electrons[i].position.z = radius * Math.sin(angle);
+                }
+            }
+            
+            // Create the scene
+            scene = createScene();
+            
+            // Run the render loop
+            engine.runRenderLoop(function() {
+                moveElectrons();
+                scene.render();
+            });
+            
+            // Handle browser resize
+            window.addEventListener("resize", function() {
+                engine.resize();
+            });
+        });
+    </script>
+</body>
+</html>
